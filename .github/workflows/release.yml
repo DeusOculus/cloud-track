@@ -13,7 +13,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -39,7 +39,7 @@ jobs:
     name: Release QA
     steps:
       - name: Build and Deploy
-        uses: ".github/actions/deploy"
+        uses: .github/actions/deploy
         secrets:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
           SERVICE: ${{ secrets.GCP_APP_NAME }}
@@ -50,7 +50,7 @@ jobs:
     name: Release Prod
     steps:
       - name: Build and Deploy
-        uses: ".github/actions/deploy"
+        uses: .github/actions/deploy
         secrets:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
           SERVICE: ${{ secrets.GCP_APP_NAME }}
