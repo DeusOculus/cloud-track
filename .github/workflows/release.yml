@@ -1,0 +1,80 @@
+name: Deploy
+on:
+  push:
+    branches: [master, qa]
+
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+
+      # - name: Install dependencies
+      #   run: go get .
+
+      - name: Build
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v . -o ./app
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: ./bin/app
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy-qa:
+    needs: [build]
+    if: ${{ github.ref == 'refs/heads/qa' }}
+    name: Release QA
+    steps:
+      - name: Build and Deploy
+        uses: ".github/actions/deploy"
+        secrets:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
+          SERVICE: ${{ secrets.GCP_APP_NAME }}
+
+  deploy-prod:
+    needs: [build]
+    if: ${{ github.ref == 'refs/heads/master')}
+    name: Release Prod
+    steps:
+      - name: Build and Deploy
+        uses: ".github/actions/deploy"
+        secrets:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
+          SERVICE: ${{ secrets.GCP_APP_NAME }}
+
+  release:
+    needs: [deploy-prod]
+    name: Release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: ./bin/app
+
+      - name: Tag
+        id: tag
+        uses: anothrNick/github-tag-action@1
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          body_path: release.md
