@@ -3,7 +3,7 @@ name: Deploy
 on:
   release:
     types: [released]
-    paths: ["**.go", go.mod, go.sum]
+    paths: ["**.go", go.mod, go.sum, .github/workflows/deploy.yml]
 
   workflow_call:
     secrets:
