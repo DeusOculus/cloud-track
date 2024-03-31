@@ -54,7 +54,7 @@ jobs:
     needs: [release]
     name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
-    secrets: inherit
+    secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
     with:
       TAG: ${{ needs.release.outputs.tag }}
