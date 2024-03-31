@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
 
   release:
     needs: [tests]
@@ -56,5 +57,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
     with:
       TAG: ${{ needs.release.outputs.tag }}

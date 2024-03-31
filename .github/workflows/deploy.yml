@@ -64,7 +64,7 @@ jobs:
           cache-source: go-build-cache
 
       - name: Set up SSH-Agent
-        if: secrets.SSH_KEY
+        if: ${{ secrets.SSH_KEY }}
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
