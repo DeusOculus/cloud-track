@@ -21,14 +21,12 @@ func main() {
 	}
 
 	app := fiber.New(fiber.Config{
-		Prefork:     true,
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error { return c.SendString("Homepage") })
 	app.Get("/info", func(c *fiber.Ctx) error { return c.SendString("Info page") })
-	log.Println(config)
 	if err := app.Listen("0.0.0.0:" + config.Port); err != nil {
 		log.Fatal(err.Error())
 	}
