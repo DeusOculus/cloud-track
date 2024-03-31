@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches: [master, qa]
-    # paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
+    paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
 
 jobs:
   tests:
@@ -25,7 +25,7 @@ jobs:
           go-version-file: ./go.mod
 
       - name: Build
-        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v . -o ./app
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/app -v .
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
@@ -33,7 +33,7 @@ jobs:
           name: app
           path: ./bin/app
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 30
 
   deploy-qa:
     needs: [build]

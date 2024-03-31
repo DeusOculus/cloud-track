@@ -35,7 +35,7 @@ jobs:
         uses: golangci/golangci-lint-action@v4
         with:
           skip-cache: false
-          skip-pkg-cache: true
+          skip-pkg-cache: false
           skip-build-cache: false
 
   unit_tests:
