@@ -40,7 +40,7 @@ jobs:
 
   deploy:
     needs: [tests]
-    if: ${{ !env.REQUIRED_TESTS || needs.tests.result == 'success' }}
+    if: ${{ ! env.REQUIRED_TESTS || needs.tests.result == 'success' }}
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.event.inputs.TAG || github.event.release.tag_name || 'latest' }}
