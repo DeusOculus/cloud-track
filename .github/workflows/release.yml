@@ -11,24 +11,17 @@ on:
       - .github/workflows/deploy.yml
 
 jobs:
-  tests:
-    permissions:
-      contents: read
-      pull-requests: read
-      checks: write
-    uses: ./.github/workflows/tests.yml
-
   deploy-qa:
-    needs: [tests]
     if: ${{ always() && github.ref == 'refs/heads/qa' }}
     name: Deploy QA
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
+    with:
+      REQUIRED_TESTS: ${{ vars.REQUIRED_TESTS_PROD || false }}
 
   release:
-    needs: [tests]
     if: ${{ always() && github.ref == 'refs/heads/master' }}
     name: Release
     permissions:
@@ -60,3 +53,4 @@ jobs:
       SSH_KEY: ${{ secrets.SSH_KEY }}
     with:
       TAG: ${{ needs.release.outputs.tag }}
+      REQUIRED: ${{ vars.REQUIRED_TESTS_PROD || true }}
