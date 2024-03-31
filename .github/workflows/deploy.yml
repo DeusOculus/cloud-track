@@ -41,7 +41,7 @@ jobs:
           registry: "gcr.io"
 
       - name: Set Image
-        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ github.event.repository.name }}/" >> $GITHUB_ENV
+        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
 
       - name: Build and push
         uses: docker/build-push-action@v5
