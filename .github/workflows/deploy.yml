@@ -27,6 +27,9 @@ on:
         description: "SSH Key to download private dependencies"
         required: false
 
+env:
+  REQUIRED_TEST: ${{ github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true }}
+
 jobs:
   tests:
     permissions:
@@ -43,7 +46,6 @@ jobs:
       TAG: ${{ github.event.inputs.TAG || github.event.release.tag_name || 'latest' }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS || secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
-      REQUIRE_TEST: ${{ github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true }}
     steps:
       - uses: actions/checkout@v4
       - name: GCP Auth
