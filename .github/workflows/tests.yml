@@ -20,6 +20,19 @@ jobs:
         with:
           go-version-file: ./go.mod
 
+  misspell:
+    name: misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v4
+      - name: misspell
+        uses: reviewdog/action-misspell@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          locale: "US"
+          pattern: ["*.go"]
+
   static_tests:
     name: Static Tests
     needs: [setup]
