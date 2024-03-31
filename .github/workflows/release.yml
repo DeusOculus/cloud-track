@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches: [master, qa]
-    # paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
+    paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
 
 jobs:
   tests:
@@ -38,7 +38,7 @@ jobs:
   deploy-qa:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/qa' }}
-    name: Release QA
+    name: Deploy QA
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
@@ -46,7 +46,7 @@ jobs:
   deploy-prod:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/master' }}
-    name: Release Prod
+    name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
