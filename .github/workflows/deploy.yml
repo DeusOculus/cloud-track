@@ -28,7 +28,7 @@ on:
         required: false
 
 env:
-  REQUIRED_TEST: ${{ github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true }}
+  REQUIRED_TESTS: ${{ github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true }}
 
 jobs:
   tests:
