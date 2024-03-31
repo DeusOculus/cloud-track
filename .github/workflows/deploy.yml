@@ -13,11 +13,12 @@ on:
 
 env:
   APP_NAME: ${{ github.event.repository.name }}
-  IMAGE: gcr.io/${{ env.APP_NAME }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      IMAGE: gcr.io/${{ env.APP_NAME }}
     steps:
       - uses: actions/checkout@v4
       - name: Download artifact
