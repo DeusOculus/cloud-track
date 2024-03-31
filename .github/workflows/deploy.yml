@@ -12,7 +12,7 @@ on:
 
   workflow_call:
     inputs:
-      TAG_NAME:
+      TAG:
         type: string
         required: false
 
