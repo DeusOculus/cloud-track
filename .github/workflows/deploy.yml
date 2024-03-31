@@ -14,8 +14,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      IMAGE: gcr.io/${{ github.event.repository.name }}
     steps:
       - uses: actions/checkout@v4
       - name: Download artifact
@@ -41,6 +39,9 @@ jobs:
           username: "oauth2accesstoken"
           password: "${{ steps.gcp-auth.outputs.access_token }}"
           registry: "gcr.io"
+
+      - name: Set Image
+        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ github.event.repository.name }}/" >> $GITHUB_ENV
 
       - name: Build and push
         uses: docker/build-push-action@v5
