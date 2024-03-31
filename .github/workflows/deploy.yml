@@ -10,7 +10,6 @@ on:
       GCP_CREDENTIALS:
         description: "Service Account Key JSON"
         required: true
-        type: string
 
 jobs:
   deploy:
