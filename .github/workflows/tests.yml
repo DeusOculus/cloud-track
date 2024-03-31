@@ -2,7 +2,7 @@ name: Tests
 on:
   workflow_call:
   push:
-    branches: ["!master", "!qa"]
+    branches-ignore: [master, qa]
     paths: ["**.go", go.mod, go.sum, .github/workflows/tests.yml]
 
 jobs:
