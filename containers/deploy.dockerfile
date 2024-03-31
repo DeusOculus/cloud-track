@@ -1,6 +1,5 @@
 FROM alpine:latest
 WORKDIR /app
 
-COPY ./app ./app
-
-ENTRYPOINT ["./app"]
+COPY ../bin/app ./bin/app
+ENTRYPOINT ["./bin/app"]

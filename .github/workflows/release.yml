@@ -4,6 +4,9 @@ on:
     branches: [master, qa]
     # paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
 
+env:
+  APP_NAME: ${{ github.event.repository.name }}
+
 jobs:
   tests:
     permissions:
@@ -30,7 +33,7 @@ jobs:
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app
+          name: ${{ env.APP_NAME }}
           path: ./bin/app
           if-no-files-found: error
           retention-days: 30
