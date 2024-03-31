@@ -28,5 +28,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error { return c.SendString("Homepage") })
 	app.Get("/info", func(c *fiber.Ctx) error { return c.SendString("Info page") })
 
-	app.Listen(config.Addr)
+	if err := app.Listen(config.Addr); err != nil {
+		log.Fatal(err.Error())
+	}
 }
