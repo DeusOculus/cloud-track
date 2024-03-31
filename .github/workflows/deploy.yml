@@ -15,6 +15,9 @@ on:
       GCP_CREDENTIALS:
         description: "Service Account Key JSON"
         required: true
+      SSH_KEY:
+        description: "SSH Key to download private dependencies"
+        required: false
 
 jobs:
   deploy:
@@ -53,11 +56,18 @@ jobs:
         with:
           cache-source: go-build-cache
 
+      - name: Set up SSH-Agent
+        if: secrets.SSH_KEY
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          ssh: default
           tags: ${{ env.IMAGE }}:latest, ${{ env.IMAGE }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
