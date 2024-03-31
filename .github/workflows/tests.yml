@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+          cache-dependency-path: ./go.sum
 
   misspell:
     name: misspell
@@ -49,6 +50,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+          cache-dependency-path: ./go.sum
 
       - name: GolangCI Lint
         uses: golangci/golangci-lint-action@v4
@@ -67,6 +69,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+          cache-dependency-path: ./go.sum
 
       - name: Build
         run: go build -v

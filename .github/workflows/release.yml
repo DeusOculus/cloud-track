@@ -9,6 +9,7 @@ on:
       - dockerfile
       - .github/workflows/release.yml
       - .github/workflows/deploy.yml
+      - .github/workflows/tests.yml
 
 jobs:
   deploy-qa:

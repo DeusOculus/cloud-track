@@ -7,8 +7,9 @@ on:
       - "**.go"
       - go.mod
       - go.sum
+      - dockerfile
       - .github/workflows/deploy.yml
-      - containers/deploy.dockerfile
+      - .github/workflows/tests.yml
 
   workflow_call:
     inputs:
