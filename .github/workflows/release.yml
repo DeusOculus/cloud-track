@@ -61,4 +61,4 @@ jobs:
       SSH_KEY: ${{ secrets.SSH_KEY }}
     with:
       TAG: ${{ needs.release.outputs.tag }}
-      REQUIRED: ${{ vars.REQUIRED_TESTS_PROD || true }}
+      REQUIRED_TESTS: ${{ vars.REQUIRED_TESTS_PROD || true }}
