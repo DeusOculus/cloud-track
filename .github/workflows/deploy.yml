@@ -1,6 +1,9 @@
 name: Deploy
 
 on:
+  release:
+    types: [released]
+
   workflow_call:
     secrets:
       GCP_CREDENTIALS:

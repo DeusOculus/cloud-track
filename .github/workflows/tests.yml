@@ -1,10 +1,11 @@
 name: Tests
 on:
   pull_request:
+  workflow_call:
 
 jobs:
   cache:
-    name: Cache
+    name: Cache Dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +29,7 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: linter
+      - name: GolangCI Lint
         uses: golangci/golangci-lint-action@v4
         with:
           skip-cache: false
