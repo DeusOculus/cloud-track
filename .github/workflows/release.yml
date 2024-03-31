@@ -34,7 +34,7 @@ jobs:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/qa' }}
     name: Release QA
-    uses: ./.github/workflows/deploy
+    uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
 
@@ -42,7 +42,7 @@ jobs:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/master')}
     name: Release Prod
-    uses: ./.github/workflows/deploy
+    uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
 
