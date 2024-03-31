@@ -3,7 +3,11 @@ on:
   workflow_call:
   push:
     branches-ignore: [master, qa]
-    paths: ["**.go", go.mod, go.sum, .github/workflows/tests.yml]
+    paths:
+      - "**.go"
+      - go.mod
+      - go.sum
+      - .github/workflows/tests.yml
 
 jobs:
   setup:

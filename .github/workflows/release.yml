@@ -2,7 +2,12 @@ name: Release
 on:
   push:
     branches: [master, qa]
-    paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
+    paths:
+      - "**.go"
+      - go.mod
+      - go.sum
+      - .github/workflows/release.yml
+      - containers/deploy.dockerfile
 
 jobs:
   tests:
