@@ -18,16 +18,16 @@ jobs:
     uses: ./.github/workflows/tests.yml
 
   deploy-qa:
-    needs: [build]
-    if: ${{ github.ref == 'refs/heads/qa' }}
+    needs: [tests]
+    if: ${{ always() && github.ref == 'refs/heads/qa' }}
     name: Deploy QA
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
 
   deploy-prod:
-    needs: [build]
-    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [tests]
+    if: ${{ always() && github.ref == 'refs/heads/master' }}
     name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
     secrets:
