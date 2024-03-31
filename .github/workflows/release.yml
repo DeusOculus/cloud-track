@@ -47,7 +47,7 @@ jobs:
         uses: anothrNick/github-tag-action@1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with_v: true
+          WITH_V: true
 
       - name: Release
         uses: softprops/action-gh-release@v2
