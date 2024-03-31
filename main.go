@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Addr string
+	Port string `default:"8080"`
 	Auth string
 }
 
@@ -27,8 +27,8 @@ func main() {
 
 	app.Get("/", func(c *fiber.Ctx) error { return c.SendString("Homepage") })
 	app.Get("/info", func(c *fiber.Ctx) error { return c.SendString("Info page") })
-
-	if err := app.Listen(config.Addr); err != nil {
+	log.Println(config)
+	if err := app.Listen("0.0.0.0:" + config.Port); err != nil {
 		log.Fatal(err.Error())
 	}
 }
