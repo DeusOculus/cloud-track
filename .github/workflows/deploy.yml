@@ -29,13 +29,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.event.inputs.TAG || github.event.release.tag_name || 'latest' }}
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS || secrets.GCP_CREDENTIALS_PROD }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: GCP Auth
         id: gcp-auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+          credentials_json: "${{ env.GCP_CREDENTIALS }}"
           token_format: "access_token"
 
       - name: Set up Docker Buildx
@@ -64,10 +66,10 @@ jobs:
           cache-source: go-build-cache
 
       - name: Set up SSH-Agent
-        if: ${{ secrets.SSH_KEY != "" }}
+        if: ${{ env.SSH_KEY }}
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ env.SSH_KEY }}
 
       - name: Build and push
         uses: docker/build-push-action@v5
