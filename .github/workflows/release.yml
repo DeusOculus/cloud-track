@@ -45,7 +45,7 @@ jobs:
       - name: Tag
         id: tag
         uses: anothrNick/github-tag-action@1
-        with:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
 
