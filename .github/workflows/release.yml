@@ -15,6 +15,10 @@ jobs:
     if: ${{ always() && github.ref == 'refs/heads/qa' }}
     name: Deploy QA
     uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -48,6 +52,10 @@ jobs:
     needs: [release]
     name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
