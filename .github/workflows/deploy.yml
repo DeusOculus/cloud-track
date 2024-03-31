@@ -27,9 +27,6 @@ on:
         description: "SSH Key to download private dependencies"
         required: false
 
-env:
-  REQUIRED_TESTS: ${{ github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true }}
-
 jobs:
   tests:
     permissions:
@@ -40,7 +37,7 @@ jobs:
 
   deploy:
     needs: [tests]
-    if: ${{ ! env.REQUIRED_TESTS || needs.tests.result == 'success' }}
+    if: ${{ ! ( github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true ) || needs.tests.result == 'success' }}
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.event.inputs.TAG || github.event.release.tag_name || 'latest' }}
