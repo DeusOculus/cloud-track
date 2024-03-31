@@ -6,6 +6,10 @@ on:
 
 jobs:
   tests:
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
     uses: ./.github/workflows/tests.yml
 
   build:
