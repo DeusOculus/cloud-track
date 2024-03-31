@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY go.mod .
 COPY go.sum .
-RUN --mount=type=ssh,type=cache,target=/root/.cache/go-build \
+RUN --mount=type=cache,target=/root/.cache/go-build \
     go mod download -x
 
 COPY . .
