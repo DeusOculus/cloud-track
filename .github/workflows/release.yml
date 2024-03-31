@@ -2,14 +2,15 @@ name: Release
 on:
   push:
     branches: [master, qa]
-
-  workflow_run:
-    workflows: [Tests]
-    types: [completed]
+    paths: ["**.go", go.mod, go.sum, .github/workflows/release.yml]
 
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ always() }}
+    needs: [tests]
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -18,9 +19,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-
-      # - name: Install dependencies
-      #   run: go get .
 
       - name: Build
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v . -o ./app
@@ -37,23 +35,17 @@ jobs:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/qa' }}
     name: Release QA
-    steps:
-      - name: Build and Deploy
-        uses: ./.github/actions/deploy
-        secrets:
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
-          SERVICE: ${{ secrets.GCP_APP_NAME }}
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
 
   deploy-prod:
     needs: [build]
     if: ${{ github.ref == 'refs/heads/master')}
     name: Release Prod
-    steps:
-      - name: Build and Deploy
-        uses: ./.github/actions/deploy
-        secrets:
-          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
-          SERVICE: ${{ secrets.GCP_APP_NAME }}
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
 
   release:
     needs: [deploy-prod]

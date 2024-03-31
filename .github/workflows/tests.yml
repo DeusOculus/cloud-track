@@ -1,10 +1,13 @@
 name: Tests
 on:
-  pull_request:
+  workflow_call:
+  push:
+    branches-ignore: [master, qa]
+    paths: ["**.go", go.mod, go.sum, .github/workflows/tests.yml]
 
 jobs:
-  cache:
-    name: Cache
+  setup:
+    name: Cache Dependencies
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +18,7 @@ jobs:
 
   static_tests:
     name: Static Tests
-    needs: [cache]
+    needs: [setup]
     permissions:
       contents: read
       pull-requests: read
@@ -28,16 +31,16 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: linter
+      - name: GolangCI Lint
         uses: golangci/golangci-lint-action@v4
         with:
           skip-cache: false
-          skip-pkg-cache: false
+          skip-pkg-cache: true
           skip-build-cache: false
 
   unit_tests:
     name: Unit Tests
-    needs: [cache]
+    needs: [setup]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
