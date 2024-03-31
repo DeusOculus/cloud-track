@@ -1,5 +1,4 @@
 name: Deploy
-
 on:
   release:
     types: [released]
@@ -16,11 +15,11 @@ on:
       TAG:
         type: string
         required: false
-      REQUIRED_TESTS:
-        type: boolean
-        required: false
 
     secrets:
+      GCP_APP_NAME:
+        description: "GCP App Name"
+        required: false
       GCP_CREDENTIALS:
         description: "Service Account Key JSON"
         required: true
@@ -29,18 +28,10 @@ on:
         required: false
 
 jobs:
-  tests:
-    permissions:
-      contents: read
-      pull-requests: read
-      checks: write
-    uses: ./.github/workflows/tests.yml
-
   deploy:
-    needs: [tests]
-    if: ${{ ! ( github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true ) || needs.tests.result == 'success' }}
     runs-on: ubuntu-latest
     env:
+      APP_NAME: ${{ secrets.GCP_APP_NAME || github.event.repository.name }}
       TAG: ${{ inputs.TAG || github.event.release.tag_name || 'latest' }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS || secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -65,7 +56,7 @@ jobs:
           registry: "gcr.io"
 
       - name: Set Image
-        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
+        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ env.APP_NAME }}" >> $GITHUB_ENV
 
       - name: Go Build Cache for Docker
         uses: actions/cache@v4
@@ -73,7 +64,7 @@ jobs:
           path: go-build-cache
           key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
 
-      - name: inject go-build-cache into docker
+      - name: Inject go-build-cache into docker
         uses: reproducible-containers/buildkit-cache-dance@v2
         with:
           cache-source: go-build-cache
@@ -99,7 +90,7 @@ jobs:
         name: Deploy Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ github.event.repository.name }}
+          service: ${{ env.APP_NAME }}
           image: ${{ env.IMAGE }}
           region: us-east1
           tag: ${{ env.TAG }}

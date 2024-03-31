@@ -12,22 +12,25 @@ on:
       - .github/workflows/tests.yml
 
 jobs:
-  deploy-qa:
-    if: ${{ always() && github.ref == 'refs/heads/qa' }}
-    name: Deploy QA
-    uses: ./.github/workflows/deploy.yml
+  tests:
     permissions:
       contents: read
       pull-requests: read
       checks: write
+    uses: ./.github/workflows/tests.yml
+
+  deploy-qa:
+    needs: [tests]
+    if: ${{ (github.ref == 'refs/heads/qa') && (!(vars.REQUIRED_TESTS_QA || false) || (needs.tests.result == 'success')) }}
+    name: Deploy QA
+    uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
-    with:
-      REQUIRED_TESTS: ${{ vars.REQUIRED_TESTS_PROD || false }}
 
   release:
-    if: ${{ always() && github.ref == 'refs/heads/master' }}
+    needs: [tests]
+    if: ${{ (github.ref == 'refs/heads/master') && (!(vars.REQUIRED_TESTS_PROD || true) || (needs.tests.result == 'success')) }}
     name: Release
     permissions:
       contents: write
@@ -53,13 +56,8 @@ jobs:
     needs: [release]
     name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
-    permissions:
-      contents: read
-      pull-requests: read
-      checks: write
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
     with:
       TAG: ${{ needs.release.outputs.tag }}
-      REQUIRED_TESTS: ${{ vars.REQUIRED_TESTS_PROD || true }}
