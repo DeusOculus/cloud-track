@@ -17,7 +17,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: "go.mod"
+          go-version-file: ./go.mod
+          cache-dependency-path: ./go.sum
 
       # - name: Install dependencies
       #   run: go get .
@@ -39,7 +40,7 @@ jobs:
     name: Release QA
     steps:
       - name: Build and Deploy
-        uses: .github/actions/deploy
+        uses: ./.github/actions/deploy
         secrets:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
           SERVICE: ${{ secrets.GCP_APP_NAME }}
@@ -50,7 +51,7 @@ jobs:
     name: Release Prod
     steps:
       - name: Build and Deploy
-        uses: .github/actions/deploy
+        uses: ./.github/actions/deploy
         secrets:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
           SERVICE: ${{ secrets.GCP_APP_NAME }}
