@@ -6,9 +6,9 @@ on:
       - "**.go"
       - go.mod
       - go.sum
+      - dockerfile
       - .github/workflows/release.yml
       - .github/workflows/deploy.yml
-      - containers/deploy.dockerfile
 
 jobs:
   tests:
@@ -25,20 +25,16 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
-
-  deploy-prod:
-    needs: [tests]
-    if: ${{ always() && github.ref == 'refs/heads/master' }}
-    name: Deploy Prod
-    uses: ./.github/workflows/deploy.yml
-    secrets:
-      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
 
   release:
-    needs: [deploy-prod]
+    needs: [tests]
+    if: ${{ always() && github.ref == 'refs/heads/master' }}
     name: Release
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.new_tag }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,3 +50,13 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.new_tag }}
           body_path: release.md
+
+  deploy-prod:
+    needs: [release]
+    name: Deploy Prod
+    uses: ./.github/workflows/deploy.yml
+    with:
+      TAG: ${{ job.release.outputs.tag }}
+    secrets:
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
