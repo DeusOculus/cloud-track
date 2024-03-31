@@ -3,6 +3,7 @@ name: Deploy
 on:
   release:
     types: [released]
+    paths: ["**.go", go.mod, go.sum]
 
   workflow_call:
     secrets:

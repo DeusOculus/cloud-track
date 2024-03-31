@@ -1,7 +1,9 @@
 name: Tests
 on:
-  pull_request:
   workflow_call:
+  push:
+    branches: ["!master", "!qa"]
+    paths: ["**.go", go.mod, go.sum]
 
 jobs:
   cache:

@@ -2,6 +2,7 @@ name: Release
 on:
   push:
     branches: [master, qa]
+    paths: ["**.go", go.mod, go.sum]
 
 jobs:
   tests:
