@@ -10,6 +10,9 @@ on:
       - .github/workflows/release.yml
       - .github/workflows/deploy.yml
 
+env:
+  SSH_KEY: ${{ secrets.SSH_KEY || ""}}
+
 jobs:
   tests:
     permissions:
@@ -25,7 +28,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_QA }}
-      SSH_KEY: ${{ secrets.SSH_KEY }}
+      SSH_KEY: ${{ env.SSH_KEY }}
 
   release:
     needs: [tests]
@@ -55,8 +58,8 @@ jobs:
     needs: [release]
     name: Deploy Prod
     uses: ./.github/workflows/deploy.yml
-    with:
-      TAG: ${{ needs.release.outputs.tag }}
     secrets:
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS_PROD }}
-      SSH_KEY: ${{ secrets.SSH_KEY }}
+      SSH_KEY: ${{ env.SSH_KEY }}
+    with:
+      TAG: ${{ needs.release.outputs.tag }}
