@@ -67,7 +67,7 @@ jobs:
 
       - name: Set up SSH-Agent
         if: ${{ env.SSH_KEY }}
-        uses: webfactory/ssh-agent@v0.5.4
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ env.SSH_KEY }}
 
