@@ -1,11 +1,21 @@
 name: Tests
 on:
-  push:
   pull_request:
 
 jobs:
+  cache:
+    name: Cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
+
   static_tests:
     name: Static Tests
+    needs: [cache]
     permissions:
       contents: read
       pull-requests: read
@@ -13,22 +23,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          go-version-file: "go.mod"
+          go-version-file: ./go.mod
 
       - name: linter
         uses: golangci/golangci-lint-action@v4
+        with:
+          skip-cache: false
+          skip-pkg-cache: false
+          skip-build-cache: false
 
   unit_tests:
     name: Unit Tests
+    needs: [cache]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Go
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "go.mod"
+          go-version-file: ./go.mod
 
       - name: Test
-        uses: robherley/go-test-action@v0
+        uses: robherley/go-test-action@v0.2.0

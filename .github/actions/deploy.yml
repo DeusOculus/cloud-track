@@ -1,4 +1,4 @@
-name: deploy
+name: Deploy
 
 on:
   workflow_call:
@@ -33,7 +33,7 @@ jobs:
 
       - name: Docker Auth
         id: docker-auth
-        uses: "docker/login-action@v3"
+        uses: docker/login-action@v3
         with:
           username: "oauth2accesstoken"
           password: "${{ steps.gcp-auth.outputs.access_token }}"
