@@ -1,4 +1,4 @@
-name: Deploy
+name: Release
 on:
   push:
     branches: [master, qa]
@@ -18,7 +18,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-          cache-dependency-path: ./go.sum
 
       # - name: Install dependencies
       #   run: go get .
