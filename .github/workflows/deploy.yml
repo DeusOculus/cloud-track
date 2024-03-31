@@ -41,7 +41,7 @@ jobs:
     if: ${{ ! ( github.event.inputs.REQUIRED_TESTS || vars.REQUIRED_TESTS || true ) || needs.tests.result == 'success' }}
     runs-on: ubuntu-latest
     env:
-      TAG: ${{ github.event.inputs.TAG || github.event.release.tag_name || 'latest' }}
+      TAG: ${{ inputs.TAG || github.event.release.tag_name || 'latest' }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS || secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
     steps:
