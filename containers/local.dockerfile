@@ -13,5 +13,4 @@ FROM alpine:latest
 WORKDIR /app
 
 COPY --from=build /bin/app ./bin/app
-
 ENTRYPOINT ["./bin/app"]
