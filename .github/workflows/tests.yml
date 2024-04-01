@@ -65,8 +65,8 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Test
         uses: robherley/go-test-action@v0.2.0
