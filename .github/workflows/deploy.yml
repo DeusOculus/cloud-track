@@ -35,6 +35,7 @@ jobs:
       TAG: ${{ inputs.TAG || github.event.release.tag_name || 'latest' }}
       GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS || secrets.GCP_CREDENTIALS_PROD }}
       SSH_KEY: ${{ secrets.SSH_KEY }}
+
     steps:
       - uses: actions/checkout@v4
       - name: GCP Auth
@@ -55,8 +56,10 @@ jobs:
           password: "${{ steps.gcp-auth.outputs.access_token }}"
           registry: "gcr.io"
 
-      - name: Set Image
-        run: echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ env.APP_NAME }}" >> $GITHUB_ENV
+      - name: Set variables
+        run:
+          echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ env.APP_NAME }}" >> $GITHUB_ENV
+          echo "TAG_GCP=${TAG//./-}" >> $GITHUB_ENV
 
       - name: Go Build Cache for Docker
         uses: actions/cache@v4
@@ -90,10 +93,10 @@ jobs:
         name: Deploy Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
+          region: us-east1
           service: ${{ env.APP_NAME }}
           image: ${{ env.IMAGE }}
-          region: us-east1
-          tag: ${{ env.TAG }}
+          tag: ${{ env.TAG_GCP }}
 
       - name: Deploy URL
         run: echo ${{ steps.cloud-run.outputs.url }} >> $GITHUB_STEP_SUMMARY
