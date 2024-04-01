@@ -3,12 +3,12 @@ WORKDIR /app
 
 COPY go.mod .
 COPY go.sum .
-RUN --mount=type=cache,target=/root/.cache/go-build \
+RUN --mount=type=cache,target=~/go/pkg/mod \
     go mod download -x
 
 COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -v -ldflags="-s -w" -o /bin/app .
+    go build -v -o /bin/app .
 
 
 FROM alpine:latest
