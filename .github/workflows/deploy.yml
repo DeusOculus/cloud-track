@@ -57,9 +57,9 @@ jobs:
           registry: "gcr.io"
 
       - name: Set variables
-        run:
+        run: |
+          echo "TAG_GCP=${{ TAG//./- }}" >> $GITHUB_ENV
           echo "IMAGE=gcr.io/${{ steps.gcp-auth.outputs.project_id }}/${{ env.APP_NAME }}" >> $GITHUB_ENV
-          echo "TAG_GCP=${TAG//./-}" >> $GITHUB_ENV
 
       - uses: actions/setup-go@v5
         with:
