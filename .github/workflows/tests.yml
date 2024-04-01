@@ -34,6 +34,14 @@ jobs:
         with:
           go-version-file: ./go.mod
 
+      - name: Cache Go Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
   static_tests:
     name: Static Tests
     needs: [cache]
@@ -64,6 +72,14 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+
+      - name: Cache Go Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
