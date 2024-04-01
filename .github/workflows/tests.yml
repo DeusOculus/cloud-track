@@ -67,8 +67,6 @@ jobs:
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
-        with:
-          limit-access-to-users: AlanIsaacV
 
       - name: Test
         uses: robherley/go-test-action@v0.2.0
