@@ -25,13 +25,18 @@ jobs:
             *.go
             *.md
 
-  build:
-    name: Build
-    uses: ./.github/workflows/build.yml
+  cache:
+    name: Cache Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
 
   static_tests:
     name: Static Tests
-    needs: [build]
+    needs: [cache]
     permissions:
       contents: read
       pull-requests: read
@@ -39,11 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-          cache-dependency-path: ./go.sum
 
       - name: GolangCI Lint
         uses: golangci/golangci-lint-action@v4
@@ -54,21 +57,16 @@ jobs:
 
   unit_tests:
     name: Unit Tests
-    needs: [build]
+    needs: [cache]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-          cache-dependency-path: ./go.sum
 
-      - name: Cache modules
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.GOPATH }}/pkg/mod
-          key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
+      - name: Build
+        run: go build -v
 
       - name: Test
         uses: robherley/go-test-action@v0.2.0
