@@ -40,7 +40,11 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-go-
+            ${{ runner.os }}-go-modules-
+
+      - if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        name: Download modules
+        run: go mod download -x
 
   static_tests:
     name: Static Tests
@@ -79,7 +83,7 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-go-
+            ${{ runner.os }}-go-modules-
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
