@@ -34,8 +34,8 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: Cache Go Modules
-        uses: actions/cache@v2
+      - name: Cache Go modules
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod/
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
@@ -60,6 +60,14 @@ jobs:
         with:
           go-version-file: ./go.mod
 
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod/
+          key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-modules-
+
       - name: GolangCI Lint
         uses: golangci/golangci-lint-action@v4
         with:
@@ -77,16 +85,13 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: Cache Go Modules
-        uses: actions/cache@v2
+      - name: Cache Go modules
+        uses: actions/cache@v4
         with:
           path: ~/go/pkg/mod/
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-modules-
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
 
       - name: Test
         uses: robherley/go-test-action@v0.2.0
