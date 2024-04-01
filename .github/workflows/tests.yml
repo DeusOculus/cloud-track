@@ -37,7 +37,7 @@ jobs:
       - name: Cache Go Modules
         uses: actions/cache@v2
         with:
-          path: ~/go/pkg/mod
+          path: ~/go/pkg/mod/
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-modules-
@@ -80,7 +80,7 @@ jobs:
       - name: Cache Go Modules
         uses: actions/cache@v2
         with:
-          path: ~/go/pkg/mod
+          path: ~/go/pkg/mod/
           key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-modules-
